@@ -42,7 +42,7 @@ BEGIN
 	
 	output <= d2out WHEN input = '1' ELSE d4out;
 
-END ARCH;
+END arch;
 
 
 
