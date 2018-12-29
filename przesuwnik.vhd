@@ -6,11 +6,11 @@ entity przesuwnik is
 port(
 
 	clk				:	in std_logic;
-	data_in			:	in	std_logic_vector (23 downto 0);
+	data_in				:	in	std_logic_vector (23 downto 0);
 	reset				:	in std_logic;
 	
 	data_out			:	out std_logic;
-	read_enable		:	out std_logic	
+	read_enable			:	out std_logic	
 
 	
 );
@@ -61,14 +61,14 @@ begin
 		
 	end process;
 	
-		current_state <= next_state;
+		current_state 		<= next_state;
 		
-		data_out 	<= data_reg(0) when next_state =shift23 else
-							data_reg(0) when next_state =last_shift else
-							'0';
+		data_out 		<= data_reg(0) when next_state =shift23 else
+					data_reg(0) when next_state =last_shift else
+					'0';
 						
-		read_enable <= '1' when next_state = init			 	else 
-							'1' when next_state = last_shift 	else
-							'0';
+		read_enable 		<= '1' when next_state = init		else 
+					'1' when next_state = last_shift 	else
+					'0';
 
 end Behavioral;
