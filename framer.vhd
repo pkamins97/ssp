@@ -5,14 +5,14 @@ use ieee.numeric_std.all;
 entity framer is
 port(
 
-	clk				:	in std_logic;
-	data_in			:	in	std_logic_vector (27 downto 0);
-	reset				:	in std_logic;
+	clk		:	in std_logic;
+	data_in		:	in	std_logic_vector (27 downto 0);
+	reset		:	in std_logic;
 	is_fifo_empty	:	in std_logic;
-	wait_fr			:	in std_logic;
+	wait_fr		:	in std_logic;
 	
-	data_out			:	out std_logic;
-	read_enable		:	out std_logic
+	data_out	:	out std_logic;
+	read_enable	:	out std_logic
 	
 );
 end entity;
@@ -21,10 +21,10 @@ architecture Behavioral of framer is
 
 type FSM_state is (init, z, swait, st_read, shift27, last_shift);
 
-signal data_reg 						: std_logic_vector(27 downto 0);
-signal current_state, next_state : FSM_state;
-signal counter							: unsigned (4 downto 0);
-signal read_ok							: std_logic; 
+signal data_reg 			: std_logic_vector(27 downto 0);
+signal current_state, next_state	: FSM_state;
+signal counter				: unsigned (4 downto 0);
+signal read_ok				: std_logic; 
 
 begin
 	
@@ -97,10 +97,10 @@ begin
 		current_state 		<= next_state;
 		
 		data_out 		<= data_reg(0) when next_state =shift27 else
-							data_reg(0) when next_state =last_shift else
-							'0';
+					data_reg(0) when next_state =last_shift else
+					'0';
 						
 		read_enable 		<= '1' when read_ok='1'else
-								'0';
+					'0';
 
 end Behavioral;
