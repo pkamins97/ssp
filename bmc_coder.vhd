@@ -10,7 +10,8 @@ port(
 		input		:	in std_logic;
 		
 		output		:	out std_logic;
-		reset_framer	:	out std_logic
+		reset_framer	:	out std_logic;
+		wait_fr			:	out std_logic
 );
 end entity;
 
@@ -61,7 +62,8 @@ BEGIN
 				when init =>
 					next_state <= preamble;
 					counter_preamble <=  to_unsigned(0,3);
-					counter_coded_data <= to_unsigned(0,8);
+					counter_coded_data <= to_unsigned(0,7);
+					
 				when preamble =>
 					if(counter_preamble = 7) then
 						next_state <= coded_data;
@@ -71,10 +73,11 @@ BEGIN
 						counter_preamble <= counter_preamble + 1;
 						next_state <= preamble;						
 					end if;
+					
 				when coded_data =>
 					if(counter_coded_data = 111) then
 						next_state <= preamble;
-						counter_coded_data <= to_unsigned(0,8);
+						counter_coded_data <= to_unsigned(0,7);
 					else
 						counter_coded_data <= counter_coded_data + 1;
 						next_state <= coded_data;
@@ -83,13 +86,17 @@ BEGIN
 		end if;
 	end process;
 	
-	current_state 	<= next_state;	
-	s_out  		<= d2out WHEN input = '1' ELSE d4out;
+	current_state 	<= next_state;
 	
-	output 		<= s_out					WHEN next_state = coded_data 	else
-			cPREAMBLE(to_integer(counter_preamble)) 	WHEN next_state = preamble		else
-			'0';
+	s_out  			<= d2out WHEN input = '1' ELSE d4out;
+	
+	output 			<= s_out					WHEN next_state = coded_data 	else
+							cPREAMBLE(to_integer(counter_preamble)) 	WHEN next_state = preamble		else
+							'0';
 		
-	reset_framer	<= '1' 	WHEN next_state = preamble	ELSE
-			'0';	
+	reset_framer	<= '1' 	WHEN next_state = init 		ELSE
+							'0';	
+							
+	wait_fr			<= '1'	WHEN next_state = preamble ELSE
+							'0';
 END ARCH;
